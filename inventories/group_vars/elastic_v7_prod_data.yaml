@@ -1,0 +1,6 @@
+---
+
+elasticsearch:
+  heap_size: 32736m
+  node_master: false
+  node_data: true

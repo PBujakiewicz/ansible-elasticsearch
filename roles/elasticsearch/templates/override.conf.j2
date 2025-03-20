@@ -1,0 +1,4 @@
+[Service]
+{% if elasticsearch.LimitMEMLOCK %}
+LimitMEMLOCK = infinity
+{% endif %}

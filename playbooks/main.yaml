@@ -1,0 +1,22 @@
+---
+- hosts: "{{ parent_group }}"
+  serial: 1
+  gather_facts: false
+
+  tasks:
+    - include_role:
+        name: ../roles/common
+    - include_role:
+        name: ../roles/elasticsearch
+    - include_role:
+        name: ../roles/sysctl
+    - include_role:
+        name: ../roles/newrelic
+
+- hosts: "{{ parent_group }}"
+  serial: 1
+  gather_facts: false
+
+  tasks:
+    - include_role:
+        name: ../roles/cluster-settings

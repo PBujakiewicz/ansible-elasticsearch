@@ -1,0 +1,72 @@
+---
+config_dir: configs
+
+common:
+  packages:
+    tools:
+      bind_utils: true
+      net_tools: true
+
+    additional: []
+
+elasticsearch:
+  gpg_key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+  rpm_url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.28-x86_64.rpm
+  cluster_name: elasticsearch-v7
+  data_dir: /var/lib/elasticsearch
+  log_dir: /var/log/elasticsearch
+  LimitMEMLOCK: true
+  bootstrap_memory_lock: true
+  thread_pool_search_size: 256
+  thread_pool_search_queue_size: 1000
+  thread_pool_search_min_queue_size: 1000
+  thread_pool_search_max_queue_size: 1000
+  clusterSettings:
+    cluster.routing.allocation.disk.watermark.flood_stage: "98%"
+    cluster.routing.allocation.disk.watermark.high: "98%"
+    cluster.routing.allocation.disk.watermark.low: "95%"
+    search.default_search_timeout: "15s"
+
+sysctl:
+  - name: net.ipv4.tcp_sack
+    value: 1
+  - name: net.ipv4.tcp_timestamps
+    value: 1
+  - name: net.ipv4.tcp_window_scaling
+    value: 1
+  - name: net.ipv4.tcp_congestion_control
+    value: cubic
+  - name: net.ipv4.tcp_tw_reuse
+    value: 1
+  - name: net.ipv4.tcp_fin_timeout
+    value: 30
+  - name: net.ipv4.tcp_max_syn_backlog
+    value: 65535
+  - name: net.core.optmem_max
+    value: 65535
+  - name: net.core.somaxconn
+    value: 65535
+  - name: net.ipv4.tcp_rmem
+    value: "4096 524288 16777216"
+  - name: net.ipv4.tcp_wmem
+    value: "4096 524288 16777216"
+  - name: net.core.netdev_max_backlog
+    value: 250000
+  - name: net.core.rmem_max
+    value: 16777216
+  - name: net.core.wmem_max
+    value: 16777216
+  - name: net.core.rmem_default
+    value: 524288
+  - name: net.core.wmem_default
+    value: 524288
+  - name: vm.max_map_count
+    value: 262144
+  - name: net.ipv4.tcp_retries2
+    value: 5
+
+newrelic:
+  label:
+    environment: production
+    serviceType: elasticsearch
+    clusterName: xxx-v7

@@ -1,0 +1,5 @@
+[newrelic-infra]
+name=New Relic Infrastructure
+baseurl=https://artifactory.bujakiewiczpawel.pl/artifactory/newrelic-infra/
+gpgkey=https://download.newrelic.com/infrastructure_agent/keys/newrelic_rpm_key_current.gpg
+gpgcheck=1

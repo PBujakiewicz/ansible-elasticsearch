@@ -1,0 +1,20 @@
+---
+- block:
+    - name: "Load Local Resource"
+      include_tasks: load.yaml
+
+    - name: "Get Remote Resources"
+      include_tasks: get.yaml
+
+    - name: "Setup Resources"
+      include_tasks: setup.yaml
+
+    - name: "Delete Resources"
+      include_tasks: delete.yaml
+
+    - name: "Create Resources"
+      include_tasks: create.yaml
+      
+    - name: "Update Resources"
+      include_tasks: update.yaml
+  when: "'master-0' in inventory_hostname"

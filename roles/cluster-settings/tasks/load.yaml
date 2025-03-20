@@ -1,0 +1,13 @@
+---
+- name: "LOAD: Setup Empty Array"
+  set_fact:
+    resources_names: [ ]
+
+- name: "LOAD: Parse Names"
+  set_fact:
+    resources_names: "{{ elasticsearch.clusterSettings.keys() | default([]) }}"
+  when: elasticsearch.clusterSettings | length > 0
+
+- name: "LOAD: DEBUG: Parse Names"
+  debug:
+    msg: "{{ resources_names }}"

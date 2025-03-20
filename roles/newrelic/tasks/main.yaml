@@ -1,0 +1,41 @@
+---
+- name: Copy newrelic repo
+  copy:
+    src: newrelic-infra.repo
+    dest: /etc/yum.repos.d/newrelic-infra.repo
+
+- name: Create config for elasticsearch
+  template:
+    src: newrelic-infra.yml.j2
+    dest: /etc/newrelic-infra.yml
+  notify: Restart newrelic-infra
+
+- name: Install package
+  yum:
+    update_cache: yes
+    name: newrelic-infra
+    state: installed
+  when: not ansible_check_mode
+  notify: Restart newrelic-infra
+
+- name: Install package nri_elasticsearch
+  yum:
+    update_cache: yes
+    name: nri-elasticsearch
+    state: installed
+  when: "'master-0' in inventory_hostname"
+  notify: Restart newrelic-infra
+
+- name: Create config for nri_elasticsearch
+  template:
+    src: nri_elasticsearch.yml.j2
+    dest: /etc/newrelic-infra/integrations.d/elasticsearch-config.yml
+  when: "'master-0' in inventory_hostname"
+  notify: Restart newrelic-infra
+
+- name: Start newrelic-infra
+  service:
+    name: newrelic-infra
+    state: started
+    enabled: yes
+  when: not ansible_check_mode

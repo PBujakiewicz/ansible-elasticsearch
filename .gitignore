@@ -1,0 +1,7 @@
+/.idea/
+.vault_pass
+secrets.yml
+*.pem
+*.key
+*.retry
+*.log

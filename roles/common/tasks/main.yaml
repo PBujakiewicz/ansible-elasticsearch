@@ -1,0 +1,19 @@
+---
+- name: "Manage Bind Utils Installation"
+  yum:
+    name: bind-utils
+    state: "{{ 'present' if common.packages.tools.bind_utils | default(true) else 'absent' }}"
+
+- name: "Manage Net Tools Installation"
+  yum:
+    name: net-tools
+    state: "{{ 'present' if common.packages.tools.net_tools | default(true) else 'absent' }}"
+
+- name: "Manage Additional Packages Installation"
+  yum:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  when:
+    - item.name is defined
+    - item.state is defined
+  with_items: "{{ common.packages.additional }}"

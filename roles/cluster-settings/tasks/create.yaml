@@ -1,0 +1,12 @@
+---
+- name: "CREATE: Request"
+  register: created_resources
+  uri:
+    method: PUT
+    url: "http://{{ hostvars[inventory_hostname].ansible_host }}:9200/_cluster/settings"
+    status_code: [ 200 ]
+    body_format: json
+    return_content: no
+    validate_certs: no
+    body: "{{ { 'persistent': { item: elasticsearch.clusterSettings[item] } } | to_json }}"
+  with_items: "{{ resources_to_create }}"

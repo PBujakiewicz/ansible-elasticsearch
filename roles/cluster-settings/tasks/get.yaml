@@ -1,0 +1,29 @@
+---
+- name: "GET: Request"
+  register: fetched_resources
+  uri:
+    method: GET
+    url: http://{{ hostvars[inventory_hostname].ansible_host }}:9200/_cluster/settings?flat_settings&include_defaults
+    status_code: [ 200 ]
+    return_content: no
+    validate_certs: no
+
+- name: "GET: DEBUG: Request"
+  debug:
+    msg: "{{ fetched_resources.json }}"
+  when: fetched_resources.json is defined
+
+- name: "GET: Setup Empty Array"
+  set_fact:
+    fetched_resources_names: [ ]
+
+- name: "GET: Parse Names"
+  set_fact:
+    fetched_resources_names: "{{ (fetched_resources_names | default([])) + [item] }}"
+  with_items: "{{ fetched_resources.json.persistent.keys() }}"
+  when: fetched_resources.json is defined
+
+- name: "GET: DEBUG: Parse Names"
+  debug:
+    msg: "{{ fetched_resources_names }}"
+  when: fetched_resources.json is defined

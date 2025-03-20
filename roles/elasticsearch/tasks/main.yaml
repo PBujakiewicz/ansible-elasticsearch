@@ -1,0 +1,68 @@
+---
+
+- rpm_key:
+    state: present
+    key: '{{ elasticsearch.gpg_key }}'
+
+- name: Check if Elasticsearch is installed
+  shell: rpm -q elasticsearch
+  register: elasticsearch_installed
+  ignore_errors: true
+  changed_when: false
+
+- name: Install Elasticsearch from url
+  yum:
+    name: '{{ elasticsearch.rpm_url }}'
+    download_dir: /tmp/
+    state: present
+  notify: restart elasticsearch
+  when: elasticsearch_installed.rc != 0
+
+- name: Copy Configuration File elasticsearch.yml
+  template:
+    src: elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+    owner: root
+    group: elasticsearch
+    mode: "660"
+    force: yes
+  notify: restart elasticsearch
+
+- when: elasticsearch.LimitMEMLOCK
+  block:
+    - name: Make sure destination dir exists
+      file:
+        path: /etc/systemd/system/elasticsearch.service.d
+        state: directory
+        owner: root
+        group: root
+        mode: "755"
+
+    - name: Copy specific ElasticSearch Systemd config file
+      template:
+        src: override.conf.j2
+        dest: /etc/systemd/system/elasticsearch.service.d/override.conf
+        owner: root
+        group: elasticsearch
+        mode: "644"
+        force: yes
+      notify:
+       - reload systemd configuration
+       - restart elasticsearch
+
+- name: Copy jvm.options File
+  template:
+    src: jvm.options.j2
+    dest: /etc/elasticsearch/jvm.options
+    owner: root
+    group: elasticsearch
+    mode: "660"
+    force: yes
+  notify: restart elasticsearch
+
+- name: Start elasticsearch
+  service:
+    name: elasticsearch
+    state: started
+    enabled: yes
+  when: not ansible_check_mode
