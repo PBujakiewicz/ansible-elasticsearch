@@ -10,6 +10,7 @@ common:
     additional: []
 
 elasticsearch:
+  force_boot: false
   gpg_key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
   rpm_url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.28-x86_64.rpm
   cluster_name: elasticsearch-v7

@@ -23,4 +23,6 @@
   until: cluster_health.json.status == "green"
   retries: 10
   delay: 30
-  when: group_names | select('search', 'master') | list | length == 0
+  when:
+    - group_names | select('search', 'master') | list | length == 0
+    - elasticsearch.force_boot == false
