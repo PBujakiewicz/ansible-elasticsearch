@@ -19,6 +19,9 @@ path.data: {{ elasticsearch.data_dir }}
 path.logs: {{ elasticsearch.log_dir }}
 
 network.host: 0.0.0.0
+# OR more safer
+# network.host: {{ hostvars[inventory_hostname].ansible_host }}
+# network.bind_host: 127.0.0.1, {{ hostvars[inventory_hostname].ansible_host }}, {{ elasticsearch.lb_ip }}
 
 bootstrap.memory_lock: {{ elasticsearch.bootstrap_memory_lock }}
 
