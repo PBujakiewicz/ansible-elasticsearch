@@ -14,7 +14,7 @@
 
     - name: "Create Resources"
       include_tasks: create.yaml
-      
+
     - name: "Update Resources"
       include_tasks: update.yaml
-  when: "'master-0' in inventory_hostname"
+  when: "'master' in inventory_hostname and '0' in inventory_hostname"

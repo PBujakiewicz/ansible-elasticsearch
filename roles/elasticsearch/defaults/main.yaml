@@ -1,3 +1,28 @@
 ---
-config_dir: "configs"
-config_env: ""
+elasticsearch:
+  force_boot: false
+
+  cluster_name_prefix: elastic-v7
+  cluster_name_suffix: default
+
+  version: 7.17.28
+  lib_dir: /var/lib/elasticsearch
+  log_dir: /var/log/elasticsearch
+
+  LimitMEMLOCK: true
+  bootstrap_memory_lock: true
+
+  thread_pool_search_size: 256
+  thread_pool_search_queue_size: 1000
+  thread_pool_search_min_queue_size: 1000
+  thread_pool_search_max_queue_size: 1000
+
+  clusterSettings:
+    cluster.routing.allocation.disk.watermark.flood_stage: "98%"
+    cluster.routing.allocation.disk.watermark.high: "98%"
+    cluster.routing.allocation.disk.watermark.low: "95%"
+    search.default_search_timeout: "15s"
+
+elasticsearch_cluster_name: "{{ elasticsearch.cluster_name_prefix }}-{{ elasticsearch.cluster_name_suffix }}"
+elasticsearch_master_group: "{{ elasticsearch.cluster_name_prefix }}-master-{{ elasticsearch.cluster_name_suffix }}"
+elasticsearch_data_group: "{{ elasticsearch.cluster_name_prefix }}-data-{{ elasticsearch.cluster_name_suffix }}"

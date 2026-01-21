@@ -21,3 +21,4 @@ all:
               ansible_host: 10.10.10.5
             elastic-v7-prod-2:
               ansible_host: 10.10.10.6
+              skip_host: true

@@ -1,0 +1,41 @@
+---
+- name: "Install Filebeat Package {{ filebeat.version }}"
+  yum:
+    name: "filebeat-{{ filebeat.version }}"
+    state: present
+  notify: Restart Filebeat
+
+- name: Enable systemd service
+  systemd_service:
+    name: filebeat
+    enabled: true
+  notify:
+    - Reload Systemd Daemon
+
+- block:
+    - name: Make sure destination dir exists
+      file:
+        path: /etc/systemd/system/filebeat.service.d
+        state: directory
+        owner: root
+        group: root
+        mode: "755"
+
+    - name: Copy specific ElasticSearch Systemd config file
+      copy:
+        src: override.conf
+        dest: /etc/systemd/system/filebeat.service.d/override.conf
+        owner: root
+        group: elasticsearch
+        mode: "644"
+        force: yes
+      notify:
+        - Reload Systemd Daemon
+        - Restart Filebeat
+
+- name: Copy Filebeat configuration file
+  template:
+    src: filebeat.yaml.j2
+    dest: /etc/filebeat/filebeat.yml
+  notify: Restart Filebeat
+

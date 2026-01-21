@@ -1,0 +1,51 @@
+filebeat.inputs:
+    - type: filestream
+      enabled: true
+      paths:
+          - /var/log/*.log
+    - type: filestream
+      enabled: true
+      paths:
+          - /var/log/filebeat/*.log
+    - type: filestream
+      enabled: true
+      paths:
+          - /var/log/elasticsearch/*.log
+
+fields_under_root: true
+
+{% if filebeat is defined and filebeat.fields is defined %}
+fields:
+{%   for k,v in filebeat.fields.items() %}
+  {{ k }}: {{ v }}
+{%   endfor %}
+{% endif %}
+
+filebeat.config.modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+    reload.period: 10s
+
+setup.template.enabled: false
+
+logging.level: info
+logging.to_files: true
+logging.selectors: [ "*" ]
+logging.files:
+    path: /var/log/filebeat
+    name: filebeat
+    keepfiles: 7
+    permissions: 0640
+
+{% if filebeat is defined and filebeat.outputs is defined %}
+output:
+{{ filebeat.outputs | to_nice_yaml(indent=2) | indent(2, true) }}
+{% endif %}
+
+processors:
+    - add_host_metadata:
+          when.not.contains.tags: forwarded
+    - add_cloud_metadata: ~
+    - add_docker_metadata: ~
+    - add_kubernetes_metadata: ~
+

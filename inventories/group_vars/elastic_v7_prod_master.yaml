@@ -4,3 +4,8 @@ elasticsearch:
   heap_size: 8192m
   node_master: true
   node_data: false
+  lb_ip: 10.10.10.101
+
+# sysctl_custom:
+#   - name: net.ipv4.ip_nonlocal_bind
+#     value: 1

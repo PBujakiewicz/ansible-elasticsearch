@@ -1,0 +1,11 @@
+---
+- name: Reload Systemd Daemon
+  systemd:
+    daemon_reload: true
+  when: not ansible_check_mode
+
+- name: Restart Filebeat
+  systemd:
+    name: filebeat
+    state: restarted
+  when: not ansible_check_mode

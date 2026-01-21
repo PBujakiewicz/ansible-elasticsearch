@@ -1,4 +1,3 @@
----
 sysctl:
   - name: net.ipv4.tcp_sack
     value: 1

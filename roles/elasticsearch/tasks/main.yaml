@@ -1,22 +1,9 @@
 ---
-
-- rpm_key:
-    state: present
-    key: '{{ elasticsearch.gpg_key }}'
-
-- name: Check if Elasticsearch is installed
-  shell: rpm -q elasticsearch
-  register: elasticsearch_installed
-  ignore_errors: true
-  changed_when: false
-
-- name: Install Elasticsearch from url
+- name: "Install Elasticsearch Package {{ elasticsearch.version }}"
   yum:
-    name: '{{ elasticsearch.rpm_url }}'
-    download_dir: /tmp/
+    name: "elasticsearch-{{ elasticsearch.version }}"
     state: present
-  notify: restart elasticsearch
-  when: elasticsearch_installed.rc != 0
+  notify: Restart Elasticsearch
 
 - name: Copy Configuration File elasticsearch.yml
   template:
@@ -26,7 +13,7 @@
     group: elasticsearch
     mode: "660"
     force: yes
-  notify: restart elasticsearch
+  notify: Restart Elasticsearch
 
 - when: elasticsearch.LimitMEMLOCK
   block:
@@ -47,8 +34,8 @@
         mode: "644"
         force: yes
       notify:
-       - reload systemd configuration
-       - restart elasticsearch
+        - Reload Systemd Daemon
+        - Restart Elasticsearch
 
 - name: Copy jvm.options File
   template:
@@ -58,7 +45,7 @@
     group: elasticsearch
     mode: "660"
     force: yes
-  notify: restart elasticsearch
+  notify: Restart Elasticsearch
 
 - name: Start elasticsearch
   service:

@@ -6,7 +6,7 @@ integrations:
       USERNAME:
       PASSWORD:
       CONFIG_PATH: /etc/elasticsearch/elasticsearch.yml
-    interval: 60s
+    interval: 15s
     labels:
 {% for key, value in newrelic.label.items() %}
       {{ key }}: {{ value }}

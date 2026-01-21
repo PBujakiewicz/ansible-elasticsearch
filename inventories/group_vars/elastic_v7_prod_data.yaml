@@ -1,6 +1,7 @@
 ---
 
 elasticsearch:
-  heap_size: 32736m
+  heap_size: 32256m
   node_master: false
   node_data: true
+  lb_ip: 10.10.10.100

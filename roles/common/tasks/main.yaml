@@ -17,3 +17,17 @@
     - item.name is defined
     - item.state is defined
   with_items: "{{ common.packages.additional }}"
+
+- name: Import GPG keys for enabled repositories
+  rpm_key:
+    state: present
+    key: "{{ item.value.config.gpgkey }}"
+  loop: "{{ common.repositories | dict2items }}"
+  when: item.value.enabled
+
+- name: Generate repositories from common.repositories
+  template:
+    src: repository.j2
+    dest: "/etc/yum.repos.d/{{ item.key | replace('_', '-') }}.repo"
+  loop: "{{ common.repositories | dict2items }}"
+  when: item.value.enabled

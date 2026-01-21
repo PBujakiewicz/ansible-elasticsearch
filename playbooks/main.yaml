@@ -1,22 +1,42 @@
 ---
-- hosts: "{{ parent_group }}"
+- hosts: "{{ cluster_group_var }}"
   serial: 1
   gather_facts: false
 
   tasks:
+    - name: Show skip message
+      debug:
+        msg: "Next Host is {{ inventory_hostname }} — skipping"
+      when: skip_host | default(false)
+
+    - name: Skip Node
+      meta: end_host
+      when: skip_host | default(false)
+
     - include_role:
         name: ../roles/common
     - include_role:
         name: ../roles/elasticsearch
     - include_role:
+        name: ../roles/filebeat
+    - include_role:
         name: ../roles/sysctl
     - include_role:
         name: ../roles/newrelic
 
-- hosts: "{{ parent_group }}"
+- hosts: "{{ cluster_group_var }}"
   serial: 1
   gather_facts: false
 
   tasks:
+    - name: Show skip message
+      debug:
+        msg: "Next Host is {{ inventory_hostname }} — skipping"
+      when: skip_host | default(false)
+
+    - name: Skip Node
+      meta: end_host
+      when: skip_host | default(false)
+
     - include_role:
         name: ../roles/cluster-settings

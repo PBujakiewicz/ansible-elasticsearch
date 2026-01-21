@@ -1,0 +1,20 @@
+---
+common:
+  packages:
+    tools:
+      bind_utils: true
+      net_tools: true
+
+    additional: [ ]
+
+  repositories:
+    elasticsearch_v7:
+      enabled: false
+      config:
+        name: "Elasticsearch repository for 7.x packages"
+        enabled: 1
+        baseurl: https://artifacts.elastic.co/packages/7.x/yum
+        gpgcheck: 1
+        gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        autorefresh: 1
+        type: rpm-md

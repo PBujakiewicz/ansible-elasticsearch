@@ -1,27 +1,30 @@
-
 node.name: {{ inventory_hostname }}
-cluster.name: {{ elasticsearch.cluster_name }}
+cluster.name: {{ elasticsearch_cluster_name }}
 
 discovery.seed_hosts:
-{% for host in groups[parent_group] %}
-   - {{ hostvars[host].ansible_host }}
+{% for host in groups[elasticsearch_master_group | replace('-', '_')] %}
+    - {{ hostvars[host].ansible_host }}
 {% endfor %}
 
 cluster.initial_master_nodes:
-{% for host in groups[parent_group + '_master'] %}
-   - {{ host }}
+{% for host in groups[elasticsearch_master_group | replace('-', '_')] %}
+    - {{ host }}
 {% endfor %}
+
+{% if elasticsearch.nodeAttributes is defined %}
+{% for attr in elasticsearch.nodeAttributes %}
+node.attr.{{ attr.name }}: {{ attr.value }}
+{% endfor %}
+{% endif %}
 
 node.master: {{ elasticsearch.node_master }}
 node.data: {{ elasticsearch.node_data }}
 
-path.data: {{ elasticsearch.data_dir }}
+path.data: {{ elasticsearch.lib_dir }}
 path.logs: {{ elasticsearch.log_dir }}
 
-network.host: 0.0.0.0
-# OR more safer
-# network.host: {{ hostvars[inventory_hostname].ansible_host }}
-# network.bind_host: 127.0.0.1, {{ hostvars[inventory_hostname].ansible_host }}, {{ elasticsearch.lb_ip }}
+network.host: {{ hostvars[inventory_hostname].ansible_host }}
+network.bind_host: 127.0.0.1, {{ hostvars[inventory_hostname].ansible_host }}, {{ elasticsearch.lb_ip }}
 
 bootstrap.memory_lock: {{ elasticsearch.bootstrap_memory_lock }}
 

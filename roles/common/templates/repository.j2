@@ -1,0 +1,8 @@
+[{{ item.key | replace('_', '-') }}]
+name={{ item.value.config.name }}
+baseurl={{ item.value.config.baseurl }}
+gpgcheck={{ item.value.config.gpgcheck }}
+gpgkey={{ item.value.config.gpgkey }}
+enabled={{ item.value.config.enabled }}
+autorefresh={{ item.value.config.autorefresh }}
+type={{ item.value.config.type }}

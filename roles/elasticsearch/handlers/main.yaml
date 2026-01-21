@@ -1,19 +1,17 @@
 ---
-
-- name: reload systemd configuration
+- name: Reload Systemd Daemon
   systemd:
     daemon_reload: true
   when: not ansible_check_mode
 
-- name: restart elasticsearch
+- name: Restart Elasticsearch
   service:
     name: elasticsearch
     state: restarted
-  notify:
-    - check cluster status
+  notify: Check Elasticsearch Cluster Status
   when: not ansible_check_mode
 
-- name: check cluster status
+- name: Check Elasticsearch Cluster Status
   uri:
     url: http://{{ hostvars[inventory_hostname].ansible_host }}:9200/_cluster/health
     method: GET
@@ -21,8 +19,6 @@
       Content-Type: "application/json"
   register: cluster_health
   until: cluster_health.json.status == "green"
-  retries: 10
-  delay: 30
-  when:
-    - group_names | select('search', 'master') | list | length == 0
-    - elasticsearch.force_boot == false
+  retries: 360
+  delay: 5
+  when: elasticsearch.force_boot == false
